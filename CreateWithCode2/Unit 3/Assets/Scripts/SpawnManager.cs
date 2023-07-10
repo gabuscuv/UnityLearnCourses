@@ -29,7 +29,7 @@ public class SpawnManager : MonoBehaviour
     void SpawnObstacule()
     {
         if(/*GameObject.Find("Player")
-            .GetComponent<PlayerController>().*/playerController.isGameOver)
+            .GetComponent<PlayerController>().*/playerController.GetIsGameOver() )
         {
             CancelInvoke("SpawnObstacule");return;
         }
