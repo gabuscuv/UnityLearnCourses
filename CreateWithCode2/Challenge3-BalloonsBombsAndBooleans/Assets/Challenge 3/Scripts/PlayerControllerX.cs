@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class PlayerControllerX : MonoBehaviour
 {
-    public bool gameOver;
+    public bool gameOver = false;
+
+
 
     public float floatForce;
     private float gravityModifier = 1.5f;
@@ -12,6 +14,8 @@ public class PlayerControllerX : MonoBehaviour
 
     public ParticleSystem explosionParticle;
     public ParticleSystem fireworksParticle;
+
+    private float YLimit = 16;
 
     private AudioSource playerAudio;
     public AudioClip moneySound;
@@ -23,6 +27,7 @@ public class PlayerControllerX : MonoBehaviour
     {
         Physics.gravity *= gravityModifier;
         playerAudio = GetComponent<AudioSource>();
+        playerRb = GetComponent<Rigidbody>();
 
         // Apply a small upward force at the start of the game
         playerRb.AddForce(Vector3.up * 5, ForceMode.Impulse);
@@ -32,23 +37,32 @@ public class PlayerControllerX : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
+
         // While space is pressed and player is low enough, float up
-        if (Input.GetKey(KeyCode.Space) && !gameOver)
+        if (! isThePlayerTooHigh() && Input.GetKey(KeyCode.Space) && !gameOver)
         {
-            playerRb.AddForce(Vector3.up * floatForce);
+            playerRb.AddForce(Vector3.up * floatForce, ForceMode.Impulse);
         }
+    }
+
+    private bool isThePlayerTooHigh() 
+    {
+        return this.transform.position.y >= YLimit;
     }
 
     private void OnCollisionEnter(Collision other)
     {
+        if (gameOver) { return; }
         // if player collides with bomb, explode and set gameOver to true
-        if (other.gameObject.CompareTag("Bomb"))
+        if (other.gameObject.CompareTag("Bomb") || other.gameObject.CompareTag("Ground"))
         {
             explosionParticle.Play();
             playerAudio.PlayOneShot(explodeSound, 1.0f);
             gameOver = true;
             Debug.Log("Game Over!");
-            Destroy(other.gameObject);
+            if (other.gameObject.CompareTag("Bomb")) Destroy(other.gameObject);
+            
         } 
 
         // if player collides with money, fireworks
