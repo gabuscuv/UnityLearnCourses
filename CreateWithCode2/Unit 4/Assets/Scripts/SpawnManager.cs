@@ -5,13 +5,26 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
-    public GameObject spawn;
+    public GameObject enemyPrefab;
+    public GameObject powerupPrefab;
     public float spawnRange = 9;
+    public int InitialSpawnNumber = 3;
+    public int MaxSpawnNumber = 32;
 
+    private int waves = 1;
     // Start is called before the first frame update
     void Start()
     {
-        Instantiate(spawn, GenerateSpawnPosition() , spawn.transform.rotation);
+
+   //     SpawnEnemyWave(SpawnNumber);
+    }
+
+    private void SpawnEnemyWave(int SpawnNumber) 
+    {
+        for (int i = 0; i < SpawnNumber; i++)
+        {
+            Instantiate(enemyPrefab, GenerateSpawnPosition() , enemyPrefab.transform.rotation);
+        }
     }
 
     private Vector3 GenerateSpawnPosition() 
@@ -27,6 +40,12 @@ public class SpawnManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (FindObjectsOfType<Enemy>().Length == 0)
+        {
+            SpawnEnemyWave(Random.Range(InitialSpawnNumber,Mathf.Clamp(InitialSpawnNumber * waves, InitialSpawnNumber, MaxSpawnNumber)));
+            Instantiate(powerupPrefab, GenerateSpawnPosition(), powerupPrefab.transform.rotation);
+            waves++;
+        }
+        
     }
 }
