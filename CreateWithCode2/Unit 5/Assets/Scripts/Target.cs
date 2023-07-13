@@ -45,6 +45,10 @@ public class Target : MonoBehaviour
     private void OnTriggerEnter(Collider collider)
     {
         Destroy(gameObject);
+        if(! gameObject.CompareTag("Bad"))
+        {
+            gameManager.GameOver();
+        }
     }
 
     Vector3 GetARandomPosition()
