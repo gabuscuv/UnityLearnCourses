@@ -4,7 +4,13 @@ using UnityEngine;
 
 public class Target : MonoBehaviour
 {
+
+    public int pointValue = 1;
+
     private Rigidbody rigidBody;
+    private IGameManager gameManager;
+
+    public ParticleSystem explosionParticle;
 
     private float
                 minSpeed = 12,
@@ -24,13 +30,18 @@ public class Target : MonoBehaviour
                 ForceMode.Impulse
             );
         this.transform.position = GetARandomPosition();
+        gameManager = GameObject.Find("GameManager").GetComponent<IGameManager>();
     }
 
+    // This is Player Input
     private void OnMouseDown()
     {
+        gameManager.UpdateScore(pointValue);
+        Instantiate(explosionParticle, transform.position, explosionParticle.transform.rotation);
         Destroy(gameObject);
     }
 
+    // This is when a Target reach the floor.
     private void OnTriggerEnter(Collider collider)
     {
         Destroy(gameObject);
