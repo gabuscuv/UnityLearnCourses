@@ -13,14 +13,14 @@ public class SpawnManagerX : MonoBehaviour
 
     public int enemyCount;
     public int waveCount = 1;
-
+    public float maxEnemiesSpeed = 2000;
 
     public GameObject player; 
 
     // Update is called once per frame
     void Update()
     {
-        enemyCount = GameObject.FindGameObjectsWithTag("Powerup").Length;
+        enemyCount = GameObject.FindGameObjectsWithTag("Enemy").Length;
 
         if (enemyCount == 0)
         {
@@ -49,14 +49,22 @@ public class SpawnManagerX : MonoBehaviour
         }
 
         // Spawn number of enemy balls based on wave number
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < enemiesToSpawn; i++)
         {
-            Instantiate(enemyPrefab, GenerateSpawnPosition(), enemyPrefab.transform.rotation);
+
+            IEnemy enemy = Instantiate(enemyPrefab, GenerateSpawnPosition(), enemyPrefab.transform.rotation).GetComponent<IEnemy>();
+            enemy.SetSpeed(ChooseASpeed(ref enemy));
+            
         }
 
         waveCount++;
         ResetPlayerPosition(); // put player back at start
 
+    }
+
+    float ChooseASpeed(ref IEnemy enemy)
+    {
+        return Random.Range(enemy.GetSpeed(), Mathf.Clamp(enemy.GetSpeed() * waveCount, enemy.GetSpeed(), maxEnemiesSpeed));
     }
 
     // Move player back to position in front of own goal
