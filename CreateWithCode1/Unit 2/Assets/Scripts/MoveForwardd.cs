@@ -15,5 +15,7 @@ public class MoveForwardd : MonoBehaviour
     void Update()
     {
         this.transform.Translate(Vector3.forward * Time.deltaTime * speed);
+
+    //   if (this.transform.position.z > 50) { Destroy(gameObject); }
     }
 }
